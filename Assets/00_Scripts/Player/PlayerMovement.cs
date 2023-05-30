@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isGrounded;
     private bool isClimbing;
+    private bool isJumping;
 
     public Transform GroundCheck;
     public LayerMask GroundLayer;
@@ -24,6 +22,9 @@ public class PlayerMovement : MonoBehaviour
     private float scaleX;
 
     private InputAction move;
+    private InputAction jump;
+
+    private bool isRunning;
 
     private void Awake()
     {
@@ -35,22 +36,35 @@ public class PlayerMovement : MonoBehaviour
     {
         move = playerControls.Player.Move;
         move.Enable();
+        jump = playerControls.Player.Jump;
+        jump.performed += Jump;
+        jump.Enable();
     }
 
     private void OnDisable()
     {
         move.Disable();
+        jump.Disable();
     }
 
     private void Update()
     {
         movement = move.ReadValue<Vector2>();
+        Animation();
     }
 
     private void FixedUpdate()
     {
         rb2d.velocity = new Vector2(movement.x * MovementSpeed, rb2d.velocity.y);
         Flip();
+        rb2d.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        if (isGrounded && isJumping)
+        {
+            // Player has landed on the ground, stop the jump animation
+            animator.SetBool("IsJumping", false);
+            isJumping = false;
+        }
     }
 
     public void Flip()
@@ -65,15 +79,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Jump()
+    private void Jump(InputAction.CallbackContext context)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        CheckIfGrounded();
+        if (isGrounded)
         {
-            CheckIfGrounded();
-            if (isGrounded)
-            {
-                rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce);
-            }
+            rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce);
+
+            animator.SetBool("IsJumping", true);
+            isJumping = true;
         }
     }
 
@@ -82,5 +96,23 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics2D.OverlapCircle(GroundCheck.position, GroundCheck.GetComponent<CircleCollider2D>().radius, GroundLayer);
     }
 
+    private void Animation()
+    {
+        if (Mathf.Abs(rb2d.velocity.x) >= 0.05f)
+        {
+            isRunning = true;
+        }
+        else
+        {
+            isRunning = false;
+        }
+        animator.SetBool("IsRunning", isRunning);
 
+        if(!isGrounded)
+        {
+            CheckIfGrounded();
+        }
+        
+        //animator.SetBool("IsJumping", !isGrounded);
+    }
 }
