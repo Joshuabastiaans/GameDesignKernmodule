@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float MovementSpeed = 5f;
     [SerializeField] private float jumpForce = 5f;
 
-    [SerializeField] private Rigidbody2D rb2d;
+    private Rigidbody2D rb2d;
     [SerializeField] private Animator animator;
 
     private bool isGrounded;
@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         playerControls = new PlayerInputSystem();
+        rb2d = GetComponent<Rigidbody2D>();
         scaleX = transform.localScale.x;
     }
 
