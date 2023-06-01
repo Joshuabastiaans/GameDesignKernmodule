@@ -1,37 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SwitchInteract : MonoBehaviour
+public class SwitchInteract : Interact
 {
     //script that lets the player interact with switch
 
-    private PlayerInputSystem playerControls;
-    private InputAction triggerSwitch;
-
-
-    private void Awake()
+    public override void OnTriggerSwitch(InputAction.CallbackContext context)
     {
-        playerControls = new PlayerInputSystem();
-
-    }
-
-    private void OnEnable()
-    {
-        triggerSwitch = playerControls.Player.Switch;
-        triggerSwitch.performed += OnTriggerSwitch;
-        triggerSwitch.Enable();
-    }
-
-    private void OnDisable()
-    {
-        triggerSwitch.Disable();
-    }
-
-    private void OnTriggerSwitch(InputAction.CallbackContext context)
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 5f); // Check for colliders
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f); // Check for colliders
 
         SwitchActivate closestSwitch = null;
         float closestDistance = float.MaxValue;

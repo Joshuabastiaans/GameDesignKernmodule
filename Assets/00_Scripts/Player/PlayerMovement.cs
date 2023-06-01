@@ -58,7 +58,6 @@ public class PlayerMovement : MonoBehaviour
     {
         rb2d.velocity = new Vector2(movement.x * MovementSpeed, rb2d.velocity.y);
         Flip();
-        rb2d.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         if (isGrounded && isJumping)
         {
@@ -113,7 +112,5 @@ public class PlayerMovement : MonoBehaviour
         {
             CheckIfGrounded();
         }
-        
-        //animator.SetBool("IsJumping", !isGrounded);
     }
 }

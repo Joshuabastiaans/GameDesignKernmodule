@@ -5,7 +5,6 @@ using UnityEngine.Events;
 
 public class SwitchActivate : MonoBehaviour
 {
-    [SerializeField] private string Message;
     private Animator anim;
     private bool isReversed;
     public UnityEvent ActivateSwitch;
@@ -16,7 +15,6 @@ public class SwitchActivate : MonoBehaviour
     }   
     public void Activate()
     {
-        Debug.Log(Message);
         anim.SetTrigger("Activate");
         isReversed =!isReversed;
         anim.SetBool("IsReversed", isReversed); 
