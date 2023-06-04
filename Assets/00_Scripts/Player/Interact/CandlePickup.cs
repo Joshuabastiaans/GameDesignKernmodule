@@ -3,6 +3,7 @@ using UnityEngine;
 public class CandlePickup : MonoBehaviour
 {
     private Inventory inventory;
+    [SerializeField] private GameObject CandleInventory;
 
     private void Awake()
     {
@@ -16,5 +17,6 @@ public class CandlePickup : MonoBehaviour
             inventory.AddTorch();
             Destroy(gameObject);
         }
+        CandleInventory.SetActive(true);
     }
 }

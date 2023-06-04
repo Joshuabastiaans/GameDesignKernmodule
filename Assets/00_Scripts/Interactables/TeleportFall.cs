@@ -13,8 +13,6 @@ public class TeleportFall : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Player entered the teleporter");
-
         if (other.CompareTag("Player") && !isFading)
         {
             playerObject = other.gameObject;

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,11 +27,14 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isRunning;
 
+    private AudioManager audioManager;
+
     private void Awake()
     {
         playerControls = new PlayerInputSystem();
         rb2d = GetComponent<Rigidbody2D>();
         scaleX = transform.localScale.x;
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     private void OnEnable()
@@ -52,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
     {
         movement = move.ReadValue<Vector2>();
         Animation();
+        Sound();
     }
 
     private void FixedUpdate()
@@ -65,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("IsJumping", false);
             isJumping = false;
         }
+        CheckIfGrounded();
     }
 
     public void Flip()
@@ -81,7 +87,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        CheckIfGrounded();
         if (isGrounded)
         {
             rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce);
@@ -108,9 +113,24 @@ public class PlayerMovement : MonoBehaviour
         }
         animator.SetBool("IsRunning", isRunning);
 
-        if(!isGrounded)
+    }
+
+    private void Sound()
+    {
+
+        if (isRunning && isGrounded)
         {
-            CheckIfGrounded();
+            if (!audioManager.IsPlaying("Running"))
+            {
+                audioManager.Play("Running");
+            }
+        }
+        else
+        {
+            if (audioManager.IsPlaying("Running"))
+            {
+                audioManager.Stop("Running");
+            }
         }
     }
 }
